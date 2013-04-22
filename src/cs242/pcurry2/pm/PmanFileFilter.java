@@ -9,6 +9,10 @@ import javax.swing.filechooser.FileFilter;
  */
 public class PmanFileFilter extends FileFilter {
 
+    /**
+     * Determines if a file should be displayed as selectable in the file
+     * chooser.
+     */
     @Override
     public boolean accept(File f) {
         if (f.isDirectory()) {
@@ -16,13 +20,14 @@ public class PmanFileFilter extends FileFilter {
         }
         String filename = f.getName();
         int extIndex = filename.lastIndexOf('.');
-        String extension = filename.substring(extIndex + 1);
-        if (extension.equals("pman") || extension.equals("PMAN")) {
-            return true;
-        }
-        return false;
+        // I don't want to worry about the case of the extension
+        String extension = filename.substring(extIndex + 1).toLowerCase();
+        return extension.equals("pman");
     }
 
+    /**
+     * Description of the file type displayed in the file chooser.
+     */
     @Override
     public String getDescription() {
         return "PMAN file";
