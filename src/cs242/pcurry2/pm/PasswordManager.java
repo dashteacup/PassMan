@@ -290,53 +290,6 @@ public class PasswordManager {
     }
 
     /**
-     * Return a file's contents encrypted.
-     * @param fileName of the file we want to encrypt
-     * @param password with which to encrypt the file
-     * @param salt to be used in generating the key to encrypt the file
-     * @return encrypted contents of the provided file or null if there is a
-     * recoverable error.
-     *
-     * TODO: Probably should remove this. I don't know if it is still necessary.
-     */
-    public byte[] encryptFile(String fileName, char[] password, String salt) {
-        KeySpec baseKey = new PBEKeySpec(password,
-                                         salt.getBytes(),
-                                         iterations,
-                                         keyLength);
-        // Immediately null the password array to minimize risk.
-        // TODO: Find a java SecureString type like they have in C#.
-        Arrays.fill(password, '0');
-
-        byte[] fileText;
-        try {
-            fileText = Files.readAllBytes(Paths.get(fileName));
-        }
-        catch (Exception e) {
-            // File IO error is recoverable.
-            e.printStackTrace();
-            return null;
-        }
-
-        byte[] cipherText = null;
-        try {
-            SecretKeyFactory factory = SecretKeyFactory.getInstance(pbeAlgorithm);
-            SecretKey secret = factory.generateSecret(baseKey);
-            SecretKeySpec key = new SecretKeySpec(secret.getEncoded(), encryptionAlgorithm);
-            Cipher encryptor = Cipher.getInstance(cipherTransformation);
-            encryptor.init(Cipher.ENCRYPT_MODE, key);
-            cipherText = encryptor.doFinal(fileText);
-        }
-        catch (GeneralSecurityException e) {
-            // Something went horribly wrong. Run JavaEncryptionSettingsTest to
-            // ensure that the algorithm is properly installed.
-            e.printStackTrace();
-            System.exit(PMExitCode.ALGORITHM);
-        }
-        return cipherText;
-    }
-
-    /**
      * Randomly generates a new 16 byte salt for this password manager.
      */
     private void generateSalt() {

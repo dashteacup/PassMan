@@ -1,7 +1,6 @@
 package cs242.pcurry2.pm;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -12,6 +11,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 public class PasswordManagerTest {
+
     private static final String shortText = "cats";
     private static final String midsizedText =
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in " +
@@ -21,23 +21,6 @@ public class PasswordManagerTest {
     private static final String iv16 = "abcdefghijklmnop";
 
     @Test
-    public void encryptTestFile() {
-        String filePath = "testfiles/plainTextFile.txt";
-        String password = "dogs";
-        String salt = "12345";
-        PasswordManager pm = new PasswordManager();
-        byte[] encrypted = pm.encryptFile(filePath, password.toCharArray(), salt);
-        assertNotNull(encrypted);
-        try {
-            Files.write(Paths.get(filePath + ".pman"), encrypted);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
     public void encryptFileWithHeadersAndFooters() {
         String filename = "testfiles/textlines.pman";
 
@@ -45,6 +28,7 @@ public class PasswordManagerTest {
         try {
             pm.savePasswordFile(filename, "mark1".toCharArray());
             byte[] result = Files.readAllBytes(Paths.get(filename));
+            // Make sure the header and footer tags are in the right place.
             assertEquals("PMFileVer001.000", new String(Arrays.copyOfRange(result, 0, 16)));
             assertEquals(salt16, new String(Arrays.copyOfRange(result, 16, 32)));
             assertEquals(iv16, new String(Arrays.copyOfRange(result, 32, 48)));
