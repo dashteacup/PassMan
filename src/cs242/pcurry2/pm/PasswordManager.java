@@ -1,6 +1,7 @@
 package cs242.pcurry2.pm;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -195,13 +196,15 @@ public class PasswordManager {
     }
 
     /**
-     * Open a password file and load its data into memory
-     * @param filename of the password file
-     * @param password used to encrypt the file
+     * Open a password file and load its data into the PasswordManager.
+     * @param file object representing the password file.
+     * @param password used to encrypt the file.
+     * @throws IOException when the file is improperly formatted.
+     * @throws BadPasswordException when the user inputs an invalid password.
      */
-    public void openPasswordFile(String filename, char[] password)
+    public void openPasswordFile(File file, char[] password)
             throws IOException, BadPasswordException {
-        byte[] rawFileData = Files.readAllBytes(Paths.get(filename));
+        byte[] rawFileData = Files.readAllBytes(file.toPath());
 
         // Mark the locations of each component
         int fileHeaderStart = 0 * blockSize;
@@ -236,6 +239,19 @@ public class PasswordManager {
         byte[] cipherText = Arrays.copyOfRange(rawFileData, cipherTextStart, footerStart);
         byte[] decryptedText = decryptText(cipherText, password);
         currentFileText = new String(decryptedText);
+    }
+
+    /**
+     * Open a password file and load its data into the PasswordManager.
+     * @param filename of the password file
+     * @param password used to encrypt the file
+     * @throws IOException when the file is improperly formatted.
+     * @throws BadPasswordException when the user inputs an invalid password.
+     */
+    public void openPasswordFile(String filename, char[] password)
+            throws IOException, BadPasswordException {
+        // Interface convenience.
+        openPasswordFile(new File(filename), password);
     }
 
     /**

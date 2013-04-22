@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
@@ -132,10 +133,26 @@ public class PMView {
     }
 
     /**
+     * Set the main windows text area to display the given source text.
+     * @param text to be shown.
+     */
+    public void setText(String text) {
+        textArea.setText(text);
+    }
+
+    /**
      * Clear the main window's text area.
      */
     public void resetText() {
         textArea.setText("");
+    }
+
+    /**
+     * Show a message dialog box attached to the main window of the application.
+     * @param message to be displayed to the user.
+     */
+    public void showMessageDialog(String message) {
+        JOptionPane.showMessageDialog(mainWindow, message);
     }
 
     /**
