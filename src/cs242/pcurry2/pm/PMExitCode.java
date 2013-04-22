@@ -11,15 +11,11 @@ package cs242.pcurry2.pm;
  */
 public class PMExitCode {
     /**
-     * Couldn't use a necessary encryption algorithm.
+     * There was an unrecovable error within the JCA's encryption library.
+     * You should run JavaEncryptionSettingsTest to ensure that the appropriate
+     * functionality is supported on this platform.
      */
-    public static final int ALGORITHM = 1;
-
-    /**
-     * Tried to use an invalid cryptographic key.
-     * Currently unused.
-     */
-    public static final int KEY = 2;
+    public static final int JCA_ALGORITHM_ERROR = 1;
 
     /**
      * Private constructor since this only has public static fields and should

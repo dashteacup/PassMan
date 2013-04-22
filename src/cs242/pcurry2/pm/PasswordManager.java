@@ -179,7 +179,7 @@ public class PasswordManager {
         }
         catch (GeneralSecurityException e) {
             e.printStackTrace();
-            System.exit(PMExitCode.ALGORITHM);
+            System.exit(PMExitCode.JCA_ALGORITHM_ERROR);
         }
         return cipherText;
 
@@ -268,7 +268,7 @@ public class PasswordManager {
         }
         catch (GeneralSecurityException e) {
             e.printStackTrace();
-            System.exit(PMExitCode.KEY);
+            System.exit(PMExitCode.JCA_ALGORITHM_ERROR);
         }
         return plainText;
     }
