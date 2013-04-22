@@ -72,6 +72,10 @@ public class PMController {
                     catch (BadPasswordException e) {
                         view.showMessageDialog("Invalid password for file: " + file.getName());
                     }
+                    catch (InvalidPasswordFileException e) {
+                        System.err.println(e.getMessage());
+                        view.showMessageDialog("Password file: " + file.getName() + " is not a properly formatted .pman file.");
+                    }
                     catch (IOException e) {
                         // TODO: Do something more appropriate when there is a file
                         // IO error.

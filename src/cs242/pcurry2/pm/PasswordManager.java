@@ -154,7 +154,8 @@ public class PasswordManager {
     /**
      * Encrypt text using password basd encryption (PBE).
      * @param content to be encrypted
-     * @param password to use to encrypt the text
+     * @param password to use to encrypt the text. The password array will be
+     * cleared by this method.
      * @return the encrypted text
      */
     public byte[] encryptContent(String content, char[] password) {
@@ -203,7 +204,7 @@ public class PasswordManager {
      * @throws BadPasswordException when the user inputs an invalid password.
      */
     public void openPasswordFile(File file, char[] password)
-            throws IOException, BadPasswordException {
+            throws InvalidPasswordFileException, BadPasswordException, IOException {
         byte[] rawFileData = Files.readAllBytes(file.toPath());
 
         // Mark the locations of each component
@@ -216,22 +217,22 @@ public class PasswordManager {
 
         // Verify that the file has the appropriate structure
         if (rawFileData.length < 6 * blockSize) {
-            throw new IOException("File is too small to be a valid .pman file");
+            throw new InvalidPasswordFileException("File is too small to be a valid .pman file");
         }
         String givenHeader = new String(Arrays.copyOfRange(
                 rawFileData, fileHeaderStart, fileHeaderStart + blockSize));
         if (!passwordFileHeader.equals(givenHeader)) {
-            throw new IOException("Invalid file header field.");
+            throw new InvalidPasswordFileException("Invalid file header field.");
         }
         String givenCipherHeader = new String(Arrays.copyOfRange(
                 rawFileData, cipherHeaderStart, cipherHeaderStart + blockSize));
         if (!cipherTextHeader.equals(givenCipherHeader)) {
-            throw new IOException("Invalid cipher text header field.");
+            throw new InvalidPasswordFileException("Invalid cipher text header field.");
         }
         String givenFooter = new String(Arrays.copyOfRange(
                 rawFileData, footerStart, footerStart + blockSize));
         if (!passwordFileFooter.equals(givenFooter)) {
-            throw new IOException("Invalid file footer field.");
+            throw new InvalidPasswordFileException("Invalid file footer field.");
         }
 
         currentFileSalt = Arrays.copyOfRange(rawFileData, saltStart, saltStart + blockSize);
@@ -249,7 +250,7 @@ public class PasswordManager {
      * @throws BadPasswordException when the user inputs an invalid password.
      */
     public void openPasswordFile(String filename, char[] password)
-            throws IOException, BadPasswordException {
+            throws InvalidPasswordFileException, BadPasswordException, IOException {
         // Interface convenience.
         openPasswordFile(new File(filename), password);
     }
@@ -257,7 +258,8 @@ public class PasswordManager {
     /**
      * Decrypt some cipher text with a given password.
      * @param cipherText encrypted data
-     * @param password used to decrypt the cipherText.
+     * @param password used to decrypt the cipherText. This password array will
+     * be cleared by this method.
      * @return plain text result
      * @throws BadPasswordException when given an invalid password
      */
