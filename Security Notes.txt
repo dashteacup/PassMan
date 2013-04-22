@@ -1,0 +1,50 @@
+Security Notes:
+
+Going to use secret key (symmetric key) encryption. AES seems like the 
+appropriate choice for this project.
+
+Going to borrow Keepass's encryption settings for my default (if possible):
+DB encrypted with AES 128bit block size, 256bit key size
+Use SHA-256 to make the key
+*Can't actually use SHA-256 since it isn't supported by the PBE. I have to
+use PBKDF2WithHmacSHA1 (SHA-1). I could manually write out the PBE code.
+Maybe I'll do that in one of the later weeks.
+
+Should use a random salt added to the password to protect against dictionary
+attacks. Will do makekey(salt + pw). Salt will be stored along side the hash.
+It does not need to be secret.
+*PBE automatically handles salting. Just provide it with one.
+
+According to the JCA doc, since strings are immutable, you should not use them
+for storing sensitive data like passwords. Use char arrays instead. Clear them as
+soon as you no longer need them.
+
+The "standard" PBE options are not secure. I'm going to have to do stuff manually.
+What about PBKDF2WithHmacSHA1? It is SHA-1 but it's an established (and supported)
+password protocol.
+
+NEVER use java.util.Random for generating random keys.
+NEVER use the ECB (the default!) block mode. (Identical blocks from the source
+text will have the same result if encrypted with the same key.)
+Let's try out CBC (Cipher block chaining) first.
+Note that Initialization Vectors (IVs) do NOT have to be secret. They can be
+transmitted along with the encrypted message.
+
+If unsure, use PKCS5PADDING for padding.
+
+Will be using the extension .pman since it doesn't seem to be used for anything.
+It's kind of silly how most of my prior choices were already taken by some
+other type of file. 
+
+Basic Password file Structure:
+PMFileVer[major version].[minor version] - 16 bytes (versions are zero padded to 3 bytes each)
+[Salt] - 16 bytes
+[IV] - 16 bytes
+PMBeginCipherTxt - 16 bytes
+[Cypher Text] - N 16 byte blocks
+PMFileEndCipherT - 16 bytes
+
+Java 7 on Mac required that I manually add the JCE Unlimited Strength Jurisdiction 
+Policy Files. Need to come up with a workaround for this in a later release.
+Maybe I should switch over to a self contained crypto library? Potential option:
+Bouncy Castle? 
