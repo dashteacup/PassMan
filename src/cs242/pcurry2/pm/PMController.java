@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 
 /**
  * Controller class for the Password Management (PM) Application.
@@ -34,7 +35,12 @@ public class PMController {
      * @param args not currently used
      */
     public static void main(String[] args) {
-        new PMController();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new PMController();
+            }
+        });
     }
 
     /**
@@ -53,7 +59,6 @@ public class PMController {
             @Override
             public void actionPerformed(ActionEvent event) {
                 // TODO Auto-generated method stub
-
             }
         });
 
@@ -64,9 +69,11 @@ public class PMController {
                 if (returnStatus == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
                     try {
-                        // TODO: Actually make a proper password dialog box...
-                        // Right now I'm keying it to only a single password.
-                        model.openPasswordFile(file, "mommy".toCharArray());
+                        char[] password = view.showPasswordDialog();
+                        if (password == null) {
+                            return;
+                        }
+                        model.openPasswordFile(file, password);
                         view.setText(model.getText());
                     }
                     catch (BadPasswordException e) {
@@ -82,7 +89,6 @@ public class PMController {
                         e.printStackTrace();
                         return;
                     }
-
                 }
             }
         });

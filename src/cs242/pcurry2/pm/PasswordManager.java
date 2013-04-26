@@ -200,8 +200,9 @@ public class PasswordManager {
      * Open a password file and load its data into the PasswordManager.
      * @param file object representing the password file.
      * @param password used to encrypt the file.
-     * @throws IOException when the file is improperly formatted.
+     * @throws InvalidPasswordFileException when the file is improperly formatted.
      * @throws BadPasswordException when the user inputs an invalid password.
+     * @throws IOException when there is a problem with reading the password file.
      */
     public void openPasswordFile(File file, char[] password)
             throws InvalidPasswordFileException, BadPasswordException, IOException {
@@ -244,10 +245,11 @@ public class PasswordManager {
 
     /**
      * Open a password file and load its data into the PasswordManager.
-     * @param filename of the password file
-     * @param password used to encrypt the file
-     * @throws IOException when the file is improperly formatted.
+     * @param file object representing the password file.
+     * @param password used to encrypt the file.
+     * @throws InvalidPasswordFileException when the file is improperly formatted.
      * @throws BadPasswordException when the user inputs an invalid password.
+     * @throws IOException when there is a problem with reading the password file.
      */
     public void openPasswordFile(String filename, char[] password)
             throws InvalidPasswordFileException, BadPasswordException, IOException {

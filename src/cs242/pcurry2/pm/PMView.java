@@ -152,7 +152,17 @@ public class PMView {
      * @param message to be displayed to the user.
      */
     public void showMessageDialog(String message) {
-        JOptionPane.showMessageDialog(mainWindow, message);
+        // TODO: figure out what I'm going to do with this dialog here.
+        JOptionPane.showMessageDialog(mainWindow, message, "errhere", JOptionPane.WARNING_MESSAGE);
+    }
+
+    /**
+     * Obtain a password from the user.
+     * @return char[] with a potential password or null if they cancel.
+     */
+    public char[] showPasswordDialog() {
+        PasswordDialog dialog = new PasswordDialog(mainWindow);
+        return dialog.getPasswordFromUser();
     }
 
     /**
