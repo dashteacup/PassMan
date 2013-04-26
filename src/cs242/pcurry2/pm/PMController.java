@@ -58,7 +58,7 @@ public class PMController {
         view.addNewFileListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                // TODO Auto-generated method stub
+                view.showTextArea();
             }
         });
 
@@ -74,6 +74,7 @@ public class PMController {
                             return;
                         }
                         model.openPasswordFile(file, password);
+                        view.showTextArea();
                         view.setText(model.getText());
                     }
                     catch (BadPasswordException e) {
@@ -98,7 +99,7 @@ public class PMController {
             public void actionPerformed(ActionEvent event) {
                 // TODO: Add save dialog if unsaved changes.
                 model = new PasswordManager();
-                view.resetText();
+                view.hideTextArea();
             }
         });
 

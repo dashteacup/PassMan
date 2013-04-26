@@ -1,15 +1,21 @@
 package cs242.pcurry2.pm;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JToolBar;
 import javax.swing.UIManager;
 
 /**
@@ -25,27 +31,47 @@ public class PMView {
     /**
      * Menu item for opening a new password file.
      */
-    private JMenuItem newPasswordFile;
+    private JMenuItem newMenu;
 
     /**
      * Menu item for opening an existing password file.
      */
-    private JMenuItem openPasswordFile;
+    private JMenuItem openMenu;
 
     /**
      * Menu item for closing a password file.
      */
-    private JMenuItem closePasswordFile;
+    private JMenuItem closeMenu;
 
     /**
      * Menu item for saving a password file.
      */
-    private JMenuItem savePasswordFile;
+    private JMenuItem saveMenu;
 
     /**
      * Menu item for saving a password file as a chosen file name.
      */
-    private JMenuItem saveAsPasswordFile;
+    private JMenuItem saveAsMenu;
+
+    /**
+     * Tool bar button for creating a new password file.
+     */
+    private JButton newButton;
+
+    /**
+     * Tool bar button for opening an existing password file.
+     */
+    private JButton openButton;
+
+    /**
+     * Tool bar button for saving the current password file.
+     */
+    private JButton saveButton;
+
+    /**
+     * Tool bar button for saving the current password file as something else.
+     */
+    private JButton saveAsButton;
 
     /**
      * Text area where the password file will be displayed.
@@ -67,9 +93,11 @@ public class PMView {
             System.err.println("Couldn't get native look and feel.");
         }
         mainWindow = new JFrame("CS242 Password Manager");
-        setUpMenu(mainWindow);
-        setUpFileChooser(mainWindow);
-        setUpTextArea(mainWindow);
+        setUpMenu();
+        JPanel panel = new JPanel(new BorderLayout());
+        setUpToolbar(panel);
+        setUpTextArea(panel);
+        mainWindow.add(panel);
         mainWindow.pack();
         mainWindow.setVisible(true);
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -81,47 +109,6 @@ public class PMView {
      */
     public JFrame getMainWindow() {
         return mainWindow;
-    }
-
-    /**
-     * Adds an action listener to the open new password file menu option.
-     * @param action listener to be attached to the menu item.
-     */
-    public void addNewFileListener(ActionListener action) {
-        newPasswordFile.addActionListener(action);
-    }
-
-    /**
-     * Adds an action listener to the open a preexisting password file menu
-     * option.
-     * @param action listener to be attached to the menu item.
-     */
-    public void addOpenFileListener(ActionListener action) {
-        openPasswordFile.addActionListener(action);
-    }
-
-    /**
-     * Adds an action listener to the close password file menu option.
-     * @param action listener to be attached to the menu item
-     */
-    public void addCloseFileListener(ActionListener action) {
-        closePasswordFile.addActionListener(action);
-    }
-
-    /**
-     * Adds an action listener to the save password file menu option.
-     * @param action listener to be attached to the menu item
-     */
-    public void addSaveFileListener(ActionListener action) {
-        savePasswordFile.addActionListener(action);
-    }
-
-    /**
-     * Adds an action listner to the save as file menu option.
-     * @param action listener to be attached to the menu item
-     */
-    public void addSaveAsFileListener(ActionListener action) {
-        saveAsPasswordFile.addActionListener(action);
     }
 
     /**
@@ -141,10 +128,22 @@ public class PMView {
     }
 
     /**
-     * Clear the main window's text area.
+     * Hide the main window's text area. This should be the state for the
+     * text area when no file is loaded or being written.
      */
-    public void resetText() {
+    public void hideTextArea() {
+        textArea.setEditable(false);
+        textArea.setBackground(Color.GRAY);
         textArea.setText("");
+    }
+
+    /**
+     * Show the main window's text area. This should be the state for when
+     * a file is open or being created.
+     */
+    public void showTextArea() {
+        textArea.setEditable(true);
+        textArea.setBackground(Color.WHITE);
     }
 
     /**
@@ -153,7 +152,7 @@ public class PMView {
      */
     public void showMessageDialog(String message) {
         // TODO: figure out what I'm going to do with this dialog here.
-        JOptionPane.showMessageDialog(mainWindow, message, "errhere", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(mainWindow, message, "Error", JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -166,45 +165,118 @@ public class PMView {
     }
 
     /**
-     * Create the PM's menu bar.
-     * @param window to put the menu in.
+     * Adds an action listener to the create new password file components.
+     * @param action listener to be attached to the components.
      */
-    private void setUpMenu(JFrame window) {
+    public void addNewFileListener(ActionListener action) {
+        newMenu.addActionListener(action);
+        newButton.addActionListener(action);
+    }
+
+    /**
+     * Adds an action listener to the open a preexisting password file
+     * components.
+     * @param action listener to be attached to the components.
+     */
+    public void addOpenFileListener(ActionListener action) {
+        openMenu.addActionListener(action);
+        openButton.addActionListener(action);
+    }
+
+    /**
+     * Adds an action listener to the close password file components.
+     * @param action listener to be attached to the components.
+     */
+    public void addCloseFileListener(ActionListener action) {
+        closeMenu.addActionListener(action);
+    }
+
+    /**
+     * Adds an action listener to the save password file components.
+     * @param action listener to be attached to the components.
+     */
+    public void addSaveFileListener(ActionListener action) {
+        saveMenu.addActionListener(action);
+        saveButton.addActionListener(action);
+    }
+
+    /**
+     * Adds an action listner to the save as file components.
+     * @param action listener to be attached to the components.
+     */
+    public void addSaveAsFileListener(ActionListener action) {
+        saveAsMenu.addActionListener(action);
+        saveAsMenu.addActionListener(action);
+    }
+
+    /**
+     * Create the PM's menu bar.
+     */
+    private void setUpMenu() {
         JMenuBar menubar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
-        newPasswordFile = new JMenuItem("New Password File");
-        openPasswordFile = new JMenuItem("Open File");
-        closePasswordFile = new JMenuItem("Close");
-        savePasswordFile = new JMenuItem("Save");
-        saveAsPasswordFile = new JMenuItem("Save As");
+        newMenu = new JMenuItem("New Password File");
+        openMenu = new JMenuItem("Open File");
+        closeMenu = new JMenuItem("Close");
+        saveMenu = new JMenuItem("Save");
+        saveAsMenu = new JMenuItem("Save As");
 
-        fileMenu.add(newPasswordFile);
-        fileMenu.add(openPasswordFile);
-        fileMenu.add(closePasswordFile);
-        fileMenu.add(savePasswordFile);
-        fileMenu.add(saveAsPasswordFile);
+        fileMenu.add(newMenu);
+        fileMenu.add(openMenu);
+        fileMenu.add(closeMenu);
+        fileMenu.add(saveMenu);
+        fileMenu.add(saveAsMenu);
         menubar.add(fileMenu);
-        window.setJMenuBar(menubar);
+        mainWindow.setJMenuBar(menubar);
     }
+
+    /**
+     * Create the PM's tool bar.
+     * @param panel to add the tool bar to.
+     */
+    private void setUpToolbar(JPanel panel) {
+        JToolBar toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+
+        newButton = makeToolbarButton("new", "New");
+        openButton = makeToolbarButton("open", "Open");
+        saveButton = makeToolbarButton("save", "Save");
+        saveAsButton = makeToolbarButton("saveAs", "Save As");
+
+        toolBar.add(newButton);
+        toolBar.add(openButton);
+        toolBar.add(saveButton);
+        toolBar.add(saveAsButton);
+        panel.add(toolBar, BorderLayout.PAGE_START);
+    }
+
+    /**
+     * Create a new tool bar button.
+     * @param imageName name of the source image without the file extension.
+     * @param toolTipText text to be shown on mouseover.
+     * @return the new button
+     */
+    private JButton makeToolbarButton(String imageName, String toolTipText) {
+        JButton button = new JButton(new ImageIcon("icons/" + imageName + ".gif"));
+        button.setToolTipText(toolTipText);
+        return button;
+    }
+
 
     /**
      * Create the text area where the password file will be displayed.
-     * @param window to put the text area in
+     * @param panel to add the text area to.
      */
-    private void setUpTextArea(JFrame window) {
+    private void setUpTextArea(JPanel panel) {
         textArea = new JTextArea(30, 40);
         textArea.setMargin(new Insets(5, 5, 5, 5));
-        textArea.setEditable(true);
+        textArea.setLineWrap(true);
+
+        // At start up you should have nothing loaded.
+        hideTextArea();
+
         JScrollPane scrollPane = new JScrollPane(textArea);
-        window.add(scrollPane);
-    }
-
-    /**
-     * Adds a file chooser component to the window.
-     * @param window to connect the file chooser to
-     */
-    private void setUpFileChooser(JFrame window) {
-
+        panel.add(scrollPane, BorderLayout.CENTER);
     }
 
 
