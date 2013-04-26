@@ -3,7 +3,9 @@ package cs242.pcurry2.pm;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -16,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
 /**
@@ -128,6 +131,14 @@ public class PMView {
     }
 
     /**
+     * Get the current contents of the text area.
+     * @return text area contents.
+     */
+    public String getText() {
+        return textArea.getText();
+    }
+
+    /**
      * Hide the main window's text area. This should be the state for the
      * text area when no file is loaded or being written.
      */
@@ -144,6 +155,7 @@ public class PMView {
     public void showTextArea() {
         textArea.setEditable(true);
         textArea.setBackground(Color.WHITE);
+        textArea.requestFocusInWindow();
     }
 
     /**
@@ -162,6 +174,17 @@ public class PMView {
     public char[] showPasswordDialog() {
         PasswordDialog dialog = new PasswordDialog(mainWindow);
         return dialog.getPasswordFromUser();
+    }
+
+    public int unsavedChangesDialog() {
+        String message = "You have unsaved changes in your current file. Do you want to save?";
+        String title = "Save file?";
+        return JOptionPane.showConfirmDialog(
+                mainWindow,
+                message,
+                title,
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
     }
 
     /**
@@ -206,7 +229,7 @@ public class PMView {
      */
     public void addSaveAsFileListener(ActionListener action) {
         saveAsMenu.addActionListener(action);
-        saveAsMenu.addActionListener(action);
+        saveAsButton.addActionListener(action);
     }
 
     /**
@@ -215,19 +238,34 @@ public class PMView {
     private void setUpMenu() {
         JMenuBar menubar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
-        newMenu = new JMenuItem("New Password File");
-        openMenu = new JMenuItem("Open File");
-        closeMenu = new JMenuItem("Close");
-        saveMenu = new JMenuItem("Save");
-        saveAsMenu = new JMenuItem("Save As");
+
+        newMenu = makeMenuItem("New Password File", KeyEvent.VK_N);
+        openMenu = makeMenuItem("Open File", KeyEvent.VK_O);
+        closeMenu = makeMenuItem("Close", KeyEvent.VK_W);
+        saveMenu = makeMenuItem("Save", KeyEvent.VK_S);
+        saveAsMenu = makeMenuItem("Save As", KeyEvent.VK_A);
 
         fileMenu.add(newMenu);
         fileMenu.add(openMenu);
         fileMenu.add(closeMenu);
         fileMenu.add(saveMenu);
         fileMenu.add(saveAsMenu);
+
         menubar.add(fileMenu);
         mainWindow.setJMenuBar(menubar);
+    }
+
+    /**
+     * Create a new menu item with an appropriate keyboard shortcut.
+     * @param text of the menu item
+     * @param keyCode should be a {@link KeyEvent} key code such as
+     * VK_A, VK_B, etc.
+     * @return a new {@link JMenuItem} instance.
+     */
+    private JMenuItem makeMenuItem(String text, int keyCode) {
+        JMenuItem item = new JMenuItem(text);
+        item.setAccelerator(KeyStroke.getKeyStroke(keyCode, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        return item;
     }
 
     /**
@@ -278,6 +316,7 @@ public class PMView {
         JScrollPane scrollPane = new JScrollPane(textArea);
         panel.add(scrollPane, BorderLayout.CENTER);
     }
+
 
 
 }

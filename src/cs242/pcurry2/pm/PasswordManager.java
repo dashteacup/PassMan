@@ -132,6 +132,8 @@ public class PasswordManager {
     /**
      * Save a password file to disk.
      * @param fileName of file to be written
+     * @param password used to encrypt the file. The password array will be
+     * cleared by this method.
      * @throws IOException if there's an error while writing the file.
      */
     public void savePasswordFile(String fileName, char[] password)
