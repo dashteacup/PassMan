@@ -5,7 +5,8 @@
 </head>
 <body>
 <h1>Manual Test Plan</h1>
-<h2>Make a new file via the tool bar</h2>
+
+<h2 id="newWithToolbar">Make a new file via the tool bar</h2>
 <ol>
   <li>Open the app. You should see: <br><img src="TestPlanImages/startup.png"></img></li>
   <li>Click the New file button on the toolbar <img src="icons/new.gif"></img></li>
@@ -28,6 +29,38 @@
   <img src="TestPlanImages/hello.png"></img></li>
   
 </ol>
-<p class="p5"><br></p>
+
+<h2>Make a new file using the file menu</h2>
+<ol>
+  <li>Repeat the steps of the <a href="#newWithToolbar">previous test</a> using the file
+  menu instead of the toolbar buttons<br><img src="TestPlanImages/filemenu.png"></li>
+  <li>Make the file name "filenewname.pman" to avoid a clash.</li>
+  <li>Make the password "12345" to prove we haven't hardcoded the pw field like I did 
+  in earlier versions.</li>
+</ol>
+
+<h2>Make a new file when the current file has unsaved changes</h2>
+<ol>
+  <li>Open the app. <br> <img src="TestPlanImages/startup.png"></li>
+  <li>Using the file menu, select the open file menu item<br> 
+  <img src="TestPlanImages/openfilemenu.png"></li>
+  <li>Select the file "midsize.pman"<br> <img src="TestPlanImages/openmidsize.png"></li>
+  <li>Enter the password "mommy" in the password dialog box<br> 
+  <img src="TestPlanImages/enterpw.png"></li>
+  <li>Open the file<br> <img src="TestPlanImages/midsizefile.png"</li>
+  <li>Type the text "This isn't going to be saved." into the bottom of the text field <br>
+  <img src="TestPlanImages/losttext.png"></li>
+  <li>Click the new file button on the toolbar <img src="icons/new.gif"></li>
+  <li>The "You have unsaved changes" dialog should appear. <br>
+  <img src="TestPlanImages/unsaved.png"></li>
+  <li>Click No.</li>
+  <li>A new empty file should appear.<br> <img src="TestPlanImages/new.png"></li>
+  <li>Click the open toolbar button <img src="icons/open.gif"></li>
+  <li>Reopen "midsize.pman".</li>
+  <li>Enter the password "mommy" in the password dialog box again.</li>
+  <li>Verify that the changes we didn't save last time are no longer present. <br>
+  <img src="TestPlanImages/midsizefile.png"></li>
+</ol>
+
 </body>
 </html>
