@@ -138,7 +138,6 @@ public class JavaEncryptionSettingsTest {
         byte[] arr = new byte[16];
         rand.nextBytes(arr);
         String str = new String(arr);
-        // System.out.println("random string(" + str + ")");
         assertEquals(16, str.length());
     }
 }
