@@ -14,7 +14,7 @@ public class BadPasswordException extends Exception {
     }
 
     /**
-     * Construct a new {@link BadPasswordException} will null as the detail message.
+     * Construct a new {@link BadPasswordException} with null as the detail message.
      */
     public BadPasswordException() {
     }
