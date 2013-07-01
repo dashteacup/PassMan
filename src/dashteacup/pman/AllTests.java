@@ -1,4 +1,4 @@
-package cs242.pcurry2.pm;
+package dashteacup.pman;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

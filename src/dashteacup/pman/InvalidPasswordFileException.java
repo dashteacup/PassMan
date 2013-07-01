@@ -1,4 +1,4 @@
-package cs242.pcurry2.pm;
+package dashteacup.pman;
 
 /**
  * Exception used when the password file is improperly formatted and cannot be

@@ -1,4 +1,4 @@
-package cs242.pcurry2.pm;
+package dashteacup.pman;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

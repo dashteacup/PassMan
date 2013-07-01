@@ -1,4 +1,4 @@
-package cs242.pcurry2.pm;
+package dashteacup.pman;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

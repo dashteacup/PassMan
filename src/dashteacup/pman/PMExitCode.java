@@ -1,4 +1,4 @@
-package cs242.pcurry2.pm;
+package dashteacup.pman;
 
 /**
  * C-Style enum for all the different return codes the program may leave when

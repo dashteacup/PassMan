@@ -1,4 +1,4 @@
-package cs242.pcurry2.pm;
+package dashteacup.pman;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

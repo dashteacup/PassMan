@@ -1,4 +1,4 @@
-package cs242.pcurry2.pm;
+package dashteacup.pman;
 
 import java.awt.Component;
 import java.awt.Window;

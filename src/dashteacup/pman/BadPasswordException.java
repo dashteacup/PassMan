@@ -1,4 +1,4 @@
-package cs242.pcurry2.pm;
+package dashteacup.pman;
 
 /**
  * Exception used when the user gives an invalid password to decrypt a file.
