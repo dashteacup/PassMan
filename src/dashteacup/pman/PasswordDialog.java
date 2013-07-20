@@ -15,7 +15,7 @@ import javax.swing.JPasswordField;
 import javax.swing.SwingUtilities;
 
 /**
- * Dialog box for recieving a user's password to unlock a password file.
+ * Dialog box for receiving a user's password to unlock a password file.
  */
 public class PasswordDialog {
 
