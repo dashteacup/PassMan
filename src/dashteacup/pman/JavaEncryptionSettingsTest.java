@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
 import javax.crypto.Cipher;
@@ -114,34 +115,18 @@ public class JavaEncryptionSettingsTest {
 
         try {
             // **** Build the encrypted message
-            // PBEKeySpec won't return a SecretKey, so I have to jump through
-            // hoops to get everything to the right type.
-            KeySpec baseKey = new PBEKeySpec(password, salt, iterations, KEY_SIZE);
-
-            // Cannot use AES with SecretKeyFactory.getInstance.
-            // I'd prefer to use something like PBKDF2WithHmacSHA256 or
-            // PBEWithHmacSHA256AndAES_256 instead of PBKDF2WithHmacSHA1 but
-            // the last is what my version of java supports out of the box.
-            SecretKeyFactory factory = SecretKeyFactory.getInstance(KEYGEN_ALG);
-            SecretKey secKey = factory.generateSecret(baseKey);
-            SecretKeySpec finalKey = new SecretKeySpec(secKey.getEncoded(), "AES");
-
+            SecretKeySpec encryptKey = PBESecretKeySpec(password, salt, iterations, KEY_SIZE);
             Cipher encryptor = Cipher.getInstance(CIPHER_TRANSFORM);
-            encryptor.init(Cipher.ENCRYPT_MODE, finalKey);
-            byte[] cyphertext = encryptor.doFinal(message);
+            encryptor.init(Cipher.ENCRYPT_MODE, encryptKey);
+            byte[] cypherText = encryptor.doFinal(message);
             byte[] IV = encryptor.getIV();
 
             // **** Decrypt the message
-            // Jump through type conversion hoops again, I don't reuse keys to
-            // simulate separate invocations of the App.
-            KeySpec baseDKey = new PBEKeySpec(password, salt, iterations, KEY_SIZE);
-            SecretKeyFactory dFactory = SecretKeyFactory.getInstance(KEYGEN_ALG);
-            SecretKey secDKey = dFactory.generateSecret(baseDKey);
-            SecretKeySpec finalDKey = new SecretKeySpec(secDKey.getEncoded(), "AES");
-
+            // I don't reuse keys to simulate separate invocations of the App.
+            SecretKeySpec decryptKey = PBESecretKeySpec(password, salt, iterations, KEY_SIZE);
             Cipher decryptor = Cipher.getInstance(CIPHER_TRANSFORM);
-            decryptor.init(Cipher.DECRYPT_MODE, finalDKey, new IvParameterSpec(IV));
-            byte[] plainText = decryptor.doFinal(cyphertext);
+            decryptor.init(Cipher.DECRYPT_MODE, decryptKey, new IvParameterSpec(IV));
+            byte[] plainText = decryptor.doFinal(cypherText);
 
             String decryptedMessage = new String(plainText);
             assertEquals(messageText, decryptedMessage);
@@ -159,13 +144,10 @@ public class JavaEncryptionSettingsTest {
     @Test
     public void aesIVSize() {
         try {
-            KeySpec baseKey = new PBEKeySpec("cat".toCharArray(), "dog".getBytes(), 6000, KEY_SIZE);
-            SecretKeyFactory factory = SecretKeyFactory.getInstance(KEYGEN_ALG);
-            SecretKey secKey = factory.generateSecret(baseKey);
-            SecretKeySpec finalKey = new SecretKeySpec(secKey.getEncoded(), "AES");
-
+            SecretKeySpec key =
+                    PBESecretKeySpec("cat".toCharArray(), "dog".getBytes(), 6000, KEY_SIZE);
             Cipher encryptor = Cipher.getInstance(CIPHER_TRANSFORM);
-            encryptor.init(Cipher.ENCRYPT_MODE, finalKey);
+            encryptor.init(Cipher.ENCRYPT_MODE, key);
             byte[] IV = encryptor.getIV();
             // IV should be 16 bytes long (128 bits)
             assertEquals(IV.length, 16);
@@ -186,5 +168,36 @@ public class JavaEncryptionSettingsTest {
         rand.nextBytes(arr);
         String str = new String(arr);
         assertEquals(16, str.length());
+    }
+
+    /**
+     * Generates a new {@link SecretKeySpec} via Password Based Encryption. This
+     * interface mirrors {@link PBEKeySpec}, but returns the right kind of
+     * {@link KeySpec} for my algorithm.
+     * @param password - the password.
+     * @param salt - the salt.
+     * @param iterationCount - the iteration count.
+     * @param keyLength - the to-be-derived key length.
+     * @return a {@link SecretKeySpec} suitable for use with my encryption algorithm.
+     * @throws NoSuchAlgorithmException - if it can't use the key generating algorithm.
+     * @throws InvalidKeySpecException - if something goes horribly wrong with the JCA.
+     */
+    private SecretKeySpec PBESecretKeySpec(char[] password,
+                                           byte[] salt,
+                                           int iterationCount,
+                                           int keyLength)
+                                                   throws
+                                                   NoSuchAlgorithmException,
+                                                   InvalidKeySpecException {
+        // PBEKeySpec won't return a SecretKey, so I have to jump through
+        // hoops to get everything to the right type.
+        KeySpec baseKey = new PBEKeySpec(password, salt, iterationCount, keyLength);
+        // Cannot use AES with SecretKeyFactory.getInstance.
+        // I'd prefer to use something like PBKDF2WithHmacSHA256 or
+        // PBEWithHmacSHA256AndAES_256 instead of PBKDF2WithHmacSHA1 but
+        // the last is what my version of java supports out of the box.
+        SecretKeyFactory factory = SecretKeyFactory.getInstance(KEYGEN_ALG);
+        SecretKey secretKey = factory.generateSecret(baseKey);
+        return new SecretKeySpec(secretKey.getEncoded(), "AES");
     }
 }
