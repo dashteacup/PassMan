@@ -20,9 +20,14 @@ public class PmanFileFilter extends FileFilter {
         }
         String filename = f.getName();
         int extIndex = filename.lastIndexOf('.');
-        // I don't want to worry about the case of the extension
-        String extension = filename.substring(extIndex + 1).toLowerCase();
-        return extension.equals("pman");
+        try {
+            // I don't want to worry about the case of the extension
+            String extension = filename.substring(extIndex + 1).toLowerCase();
+            return extension.equals("pman");
+        }
+        catch (IndexOutOfBoundsException e) {
+            return false;
+        }
     }
 
     /**
