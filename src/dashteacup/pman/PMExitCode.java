@@ -2,8 +2,8 @@ package dashteacup.pman;
 
 /**
  * C-Style enum for all the different return codes the program may leave when
- * encountering a fatal error. This may not be necessary later if I
- * add more robustness to the app.
+ * encountering a fatal error. This may not be necessary later if I add more
+ * robustness to the app.
  */
 /* I'm writing it this way instead of as an Enum so I can interface with it
  * like so: System.exit(PMExitCode.ALGORITHM); which java enums annoyingly
@@ -11,7 +11,7 @@ package dashteacup.pman;
  */
 public class PMExitCode {
     /**
-     * There was an unrecovable error within the JCA's encryption library.
+     * There was an unrecoverable error within the JCA's encryption library.
      * You should run JavaEncryptionSettingsTest to ensure that the appropriate
      * functionality is supported on this platform.
      */

@@ -17,7 +17,7 @@ public class PMController {
     private static final String defaultDirectory = "testfiles";
 
     /**
-     * The Application's view.
+     * The application's view.
      */
     private PMView view;
 

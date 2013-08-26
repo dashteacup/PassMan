@@ -224,7 +224,7 @@ public class PMView {
     }
 
     /**
-     * Adds an action listner to the save as file components.
+     * Adds an action listener to the save as file components.
      * @param action listener to be attached to the components.
      */
     public void addSaveAsFileListener(ActionListener action) {
