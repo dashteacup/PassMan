@@ -53,7 +53,8 @@ public class JavaEncryptionSettingsTest {
         int keyLength = 0;
         try {
             keyLength = Cipher.getMaxAllowedKeyLength("AES");
-        } catch (NoSuchAlgorithmException e) {
+        }
+        catch (NoSuchAlgorithmException e) {
             fail(e.getMessage());
         }
         assertTrue(keyLength >= KEY_SIZE);
@@ -85,12 +86,13 @@ public class JavaEncryptionSettingsTest {
             // doing this on another run of the application
             Cipher decrypt = Cipher.getInstance("AES");
             SecretKeySpec decryptKey = new SecretKeySpec(key, "AES");
-            decrypt.init(Cipher.DECRYPT_MODE,  decryptKey);
+            decrypt.init(Cipher.DECRYPT_MODE, decryptKey);
             byte[] decryptedData = decrypt.doFinal(encryptedData);
 
             String decryptedMessage = new String(decryptedData);
             assertEquals(messageText, decryptedMessage);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             fail(e.getMessage());
         }
     }
@@ -130,7 +132,8 @@ public class JavaEncryptionSettingsTest {
 
             String decryptedMessage = new String(plainText);
             assertEquals(messageText, decryptedMessage);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
         }
@@ -151,7 +154,8 @@ public class JavaEncryptionSettingsTest {
             byte[] IV = encryptor.getIV();
             // IV should be 16 bytes long (128 bits)
             assertEquals(IV.length, 16);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
         }
